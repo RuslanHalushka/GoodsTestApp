@@ -16,7 +16,6 @@ const AppNavigator = () => {
         screenOptions={{
           contentStyle: {
             backgroundColor: colors.background,
-            paddingTop: 15,
           },
           headerShown: false,
         }}

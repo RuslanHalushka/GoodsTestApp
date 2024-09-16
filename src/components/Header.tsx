@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { HeaderProps } from "../types/types";
 import { colors } from "../styles/colors";
 import Icon from "react-native-vector-icons/Feather";
@@ -27,8 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 20,
-    paddingTop: 30,
+    padding: 20
   },
   text: {
     fontFamily: "Barlow-Bold",

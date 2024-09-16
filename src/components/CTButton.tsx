@@ -1,12 +1,12 @@
 import React, { FC } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ButtonProps } from "../types/types";
 import { colors } from "../styles/colors";
 
 export const CTButton: FC<ButtonProps> = React.memo(
   ({ text, onClick, propButtonStyles, disabled }: ButtonProps) => {
     return (
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer, {paddingBottom: Platform.OS === 'android' ? 20 : 0}]}>
         <TouchableOpacity
           style={[styles.button, propButtonStyles]}
           onPress={onClick}
@@ -21,7 +21,7 @@ export const CTButton: FC<ButtonProps> = React.memo(
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    paddingVertical: 15,
+    paddingTop: 20,
   },
   button: {
     height: 80,
