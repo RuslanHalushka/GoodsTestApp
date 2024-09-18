@@ -1,72 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import { colors } from "../../styles/colors";
-import { Header } from "../../components/Header";
-import { Product, ProductDetailsScreenNavigationProp } from "../../types/types";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from 'react';
+import { Image, Text, View } from 'react-native';
+import { Header } from '../../components/Header';
+import { Product, ProductDetailsScreenNavigationProp } from '../../types/types';
+import { useNavigation } from '@react-navigation/native';
+import { getProductFromAsyncStorage, handleClickLike, setFavoritesToAsyncStorage } from '@/src/utils/storedProducts';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/src/store/store';
+import { addFavorites } from '@/src/store/productSlice';
+import { globalStyles } from '@/src/styles/globalStyles';
 
 export const ProductDetailsScreen = () => {
   const navigation = useNavigation<ProductDetailsScreenNavigationProp>();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState<Product>();
+  const favorites = useSelector((state: RootState) => state.products.favorites);
 
   useEffect(() => {
-    const getProductFomAsyncStorage = async () => {
-      const product = await AsyncStorage.getItem("product");
-      product && setProduct(JSON.parse(product));
+    const getProduct = async () => {
+      const product = await getProductFromAsyncStorage();
+      product && setProduct(product);
     };
-    getProductFomAsyncStorage();
+    getProduct();
   }, []);
+
+  const handleLikeClick = async () => {
+    if (product) {
+      const updatedFavorites = handleClickLike(product, favorites)();
+      dispatch(addFavorites(updatedFavorites));
+      await setFavoritesToAsyncStorage(updatedFavorites);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      <Header isBackArrow={true} navigation={navigation} />
-      <View style={styles.product}>
+      <Header
+        isBackArrow={true}
+        navigation={navigation}
+        isLikeButton={true}
+        isFavorite={product ? favorites.some((fav) => fav.id === product.id) : false}
+        onClickLike={handleLikeClick}
+      />
+      <View style={globalStyles.flex1}>
         <Image
-          source={
-            product?.image
-              ? { uri: product?.image }
-              : require("@/assets/imgs/undefined.jpg")
-          }
-          style={styles.productImage}
+          source={product?.image ? { uri: product?.image } : require('@/assets/imgs/undefined.jpg')}
+          style={globalStyles.productImageRelative}
         />
-        <View style={styles.aboutProductContainer}>
-          <Text style={styles.productTitle}>{product?.title}</Text>
-          <Text style={styles.productPrice}>${product?.price}</Text>
-          <Text style={styles.description}>{product?.description}</Text>
+        <View style={globalStyles.aboutProductContainer}>
+          <Text style={globalStyles.productTitle}>{product?.title}</Text>
+          <Text style={[globalStyles.productPrice, { fontSize: 20 }]}>${product?.price}</Text>
+          <Text style={globalStyles.description}>{product?.description}</Text>
         </View>
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  product: {
-    flex: 1,
-  },
-  productImage: {
-    width: '100%',
-    height: "50%",
-    resizeMode: "stretch",
-  },
-  aboutProductContainer: {
-    paddingHorizontal: 10,
-    marginTop: 10,
-    gap: 8,
-  },
-  productTitle: {
-    fontSize: 24,
-    fontFamily: "Barlow-Bold",
-    color: colors.textPrimary,
-  },
-  productPrice: {
-    fontSize: 20,
-    fontFamily: "Barlow-Medium",
-    color: colors.textSecondary,
-  },
-  description: {
-    fontSize: 14,
-    fontFamily: "Barlow-Regular",
-    color: colors.textPrimary,
-  },
-});

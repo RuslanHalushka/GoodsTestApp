@@ -1,25 +1,20 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ReactNode } from 'react';
 
 export type RootStackParamList = {
   ProductsListScreen: undefined;
   ProductDetailsScreen: undefined;
   AddProductScreen: undefined;
+  FavoritesProductsScreen: undefined;
 };
 
-export type ProductsListScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "ProductsListScreen"
->;
+export type ProductsListScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProductsListScreen'>;
 
-export type ProductDetailsScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "ProductDetailsScreen"
->;
+export type ProductDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ProductDetailsScreen'>;
 
-export type AddProductScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "AddProductScreen"
->;
+export type AddProductScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddProductScreen'>;
+
+export type FavoritesProductsScreenProp = NativeStackNavigationProp<RootStackParamList, 'FavoritesProductsScreen'>;
 
 export interface Product {
   id: number;
@@ -33,6 +28,9 @@ export interface HeaderProps {
   title?: string;
   isBackArrow?: boolean;
   navigation?: any;
+  isLikeButton?: boolean;
+  isFavorite?: boolean;
+  onClickLike?: () => void;
 }
 
 export interface ButtonProps {
@@ -40,6 +38,7 @@ export interface ButtonProps {
   onClick: () => void;
   propButtonStyles?: object;
   disabled?: boolean;
+  children?: ReactNode;
 }
 
 export interface InputProps {
@@ -51,11 +50,9 @@ export interface InputProps {
   error?: string;
   touched?: boolean;
   propStyles?: object;
-  type?:
-    | "default"
-    | "number-pad"
-    | "decimal-pad"
-    | "numeric"
-    | "email-address"
-    | "phone-pad";
+  type?: 'default' | 'number-pad' | 'decimal-pad' | 'numeric' | 'email-address' | 'phone-pad';
+}
+
+export interface FavoriteAbsoluteButtonProps {
+  navigation: any;
 }
